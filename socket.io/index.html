@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div id="clock"></div>
+</body>
+<script>
+    setInterval(function(){
+        var xhr = new XMLHttpRequest();
+        xhr.open('get','http://localhost:8080/time');
+        xhr.onreadystatechange = function(){
+            if(this.readyState == 4 && this.status== 200){
+                document.querySelector('#clock').innerHTML = this.responseText;
+            }
+        }
+        xhr.send();
+    },1000)
+</script>
+</html>

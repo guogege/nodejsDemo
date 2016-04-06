@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1 , user-scalable=no">
+    <title>聊天室</title>
+    <style>
+        .user{
+            color:red;
+        }
+    </style>
+    <link rel="stylesheet" href="../bow/css/bootstrap.min.css"/>
+</head>
+<body>
+    <div class="panel panel-success">
+            <div class="panel-heading">
+                欢迎加入聊天室
+            </div>
+            <div class="panel-body">
+                <ul class="list-group"></ul>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-md-9"><input type="text" id="txt" class="form-control"/></div>
+                    <div class="col-md-3"><button class="btn btn-default">发送</button></div>
+                </div>
+            </div>
+    </div>
+</body>
+<script src="../bow/js/jquery-1.11.1.js"></script>
+<script src="./socket.io/socket.io.js"></script>
+<script>
+    var socket = io();//发起请求
+    socket.on('connect',function(){
+        console.log('已经连接上了')
+    })
+    socket.on('disconnect',function(){
+
+    })
+    socket.on('error',function(){
+
+    })
+    socket.on('message',function(msg){
+        $('.list-group').append('<li class="list-group-item"><span class="user">'+msg.user+'</span>:'+msg.content+'</li>')
+    })
+    $('button').click(function(){
+        socket.send($('#txt').val());
+        $('#txt').val('');
+    })
+    $('#txt').keypress(function(ev){
+        if(ev.which == 13){
+            socket.send($('#txt').val());
+            $('#txt').val('');
+        }
+    })
+    $('body').delegate('.user','click',function(){
+        $('#txt').val('@'+$(this).text()+' ');
+    })
+//    $('.user').click(function(){
+//        $('#txt').val('@'+$(this).text()+' ');
+//    })
+</script>
+</html>

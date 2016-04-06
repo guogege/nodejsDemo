@@ -1,0 +1,4 @@
+var name = 'zhang';
+var age = '21';
+exports.name = name;
+exports.age = age;
