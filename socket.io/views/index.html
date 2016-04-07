@@ -16,6 +16,9 @@
     <div class="panel panel-success">
             <div class="panel-heading">
                 欢迎加入聊天室
+                <button class="btn btn-success" id="pinkRoom">粉红色房间</button>
+                <button class="btn btn-success" id="blueRoom">蓝色房间</button>
+                <button class="btn btn-danger" id="exit">退回大厅</button>
             </div>
             <div class="panel-body">
                 <ul class="list-group"></ul>
@@ -23,7 +26,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-md-9"><input type="text" id="txt" class="form-control"/></div>
-                    <div class="col-md-3"><button class="btn btn-default">发送</button></div>
+                    <div class="col-md-3"><button class="btn btn-default" id="btnSend">发送</button></div>
                 </div>
             </div>
     </div>
@@ -44,7 +47,7 @@
     socket.on('message',function(msg){
         $('.list-group').append('<li class="list-group-item"><span class="user">'+msg.user+'</span>:'+msg.content+'</li>')
     })
-    $('button').click(function(){
+    $('#btnSend').click(function(){
         socket.send($('#txt').val());
         $('#txt').val('');
     })
@@ -57,8 +60,12 @@
     $('body').delegate('.user','click',function(){
         $('#txt').val('@'+$(this).text()+' ');
     })
-//    $('.user').click(function(){
-//        $('#txt').val('@'+$(this).text()+' ');
-//    })
+
+    $('#pinkRoom').click(function(){
+        socket.emit('inRoom','pinkRoom')
+    })
+    $('#blueRoom').click(function(){
+        socket.emit('inRoom','blueRoom')
+    })
 </script>
 </html>

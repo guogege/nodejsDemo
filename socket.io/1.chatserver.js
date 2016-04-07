@@ -19,10 +19,16 @@ app.get('/ff',function(req,res){
 var users = {};
 //监听客户端的请求
 io.on('connection',function(socket){
-    console.log(1);
     //监听客户端发来的消息
     var username;
+    var currentRoom
     socket.send({user:'SYSTEM',content:'请输入昵称'})
+    socket.on('inRoom',function(roomname){
+        console.log(currentRoom)
+        socket.leave(currentRoom);
+        currentRoom = roomname;
+        socket.join(currentRoom);
+    })
     socket.on('message',function(msg){
         if(username){
             //var result = msg.match(/^\@(\w+)\s*\(w+)/);
@@ -37,12 +43,21 @@ io.on('connection',function(socket){
                     socket.send({user:'系统',content:'你要私聊的人不在线'})
                 }
             }else{
-                io.send({user:username,content:msg});
+                if(currentRoom){
+                    //socket.broadcast.to(currentRoom).emit('message',{user:username,content:msg})
+                    io.to(currentRoom).emit('message',{user:username,content:msg})
+                }else{
+                    io.send({user:username,content:msg});
+                }
+
             }
         }else{
             username = msg;
             users[username] = socket;
-            io.send({user:'system',content:'欢迎<span class="user">'+username+'</span>加入聊天室'})
+            currentRoom = 'hall';
+            socket.join(currentRoom);
+            io.to(currentRoom).emit('message',{user:'system',content:'欢迎<span class="user">'+username+'</span>加入聊天室'});
+          // io.send({user:'system',content:'欢迎<span class="user">'+username+'</span>加入聊天室'})
         }
         //io.send('message',msg);//向客户端发送消息
     })
